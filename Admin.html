@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shawok Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{ box-sizing:border-box; margin:0; padding:0; }
+body{ font-family:'Poppins',sans-serif; background:#f4f4f4; min-height:100vh; }
+
+/* ── LOGIN SCREEN ── */
+#loginScreen{
+  min-height:100vh; display:flex;
+  align-items:center; justify-content:center;
+  background:linear-gradient(135deg,#E10600,#ff6b35);
+}
+.login-card{
+  background:white; border-radius:20px;
+  padding:40px 36px; width:340px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.2);
+  text-align:center;
+}
+.login-card h1{ font-family:'Fredoka'; font-size:32px; color:#E10600; margin-bottom:6px; }
+.login-card p{ color:#888; font-size:14px; margin-bottom:28px; }
+.login-card input{
+  width:100%; padding:12px 16px;
+  border:1.5px solid #e0e0e0; border-radius:10px;
+  font-size:14px; font-family:'Poppins';
+  outline:none; transition:.2s; margin-bottom:14px;
+}
+.login-card input:focus{ border-color:#E10600; }
+.login-btn{
+  width:100%; padding:13px;
+  background:#E10600; color:white; border:none;
+  border-radius:10px; font-size:15px; font-weight:600;
+  cursor:pointer; font-family:'Poppins';
+  transition:.25s;
+}
+.login-btn:hover{ background:#c30000; transform:translateY(-1px); }
+.login-error{ color:#E10600; font-size:13px; margin-top:10px; display:none; }
+
+/* ── ADMIN LAYOUT ── */
+#adminScreen{ display:none; }
+.admin-header{
+  background:#E10600; color:white;
+  padding:16px 32px;
+  display:flex; justify-content:space-between; align-items:center;
+  position:sticky; top:0; z-index:100;
+  box-shadow:0 2px 16px rgba(225,6,0,0.4);
+}
+.admin-header h1{ font-family:'Fredoka'; font-size:26px; }
+.admin-header span{ font-size:13px; opacity:.85; }
+.logout-btn{
+  background:rgba(255,255,255,0.2); color:white;
+  border:1px solid rgba(255,255,255,0.3);
+  padding:7px 18px; border-radius:20px;
+  cursor:pointer; font-size:13px; font-family:'Poppins';
+  transition:.2s;
+}
+.logout-btn:hover{ background:rgba(255,255,255,0.3); }
+
+.admin-body{ max-width:900px; margin:0 auto; padding:32px 24px; }
+
+/* ── STATS ── */
+.admin-stats{
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:16px; margin-bottom:32px;
+}
+.stat-card{
+  background:white; border-radius:14px;
+  padding:20px 22px;
+  box-shadow:0 2px 12px rgba(0,0,0,0.06);
+}
+.stat-card .num{ font-family:'Fredoka'; font-size:32px; color:#E10600; }
+.stat-card .lbl{ font-size:13px; color:#888; margin-top:2px; }
+
+/* ── SECTION TITLE ── */
+.section-title{
+  font-family:'Fredoka'; font-size:22px;
+  margin-bottom:16px; color:#222;
+  display:flex; align-items:center; gap:10px;
+}
+.section-title span{ font-size:13px; color:#888; font-family:'Poppins'; font-weight:400; }
+
+/* ── MENU ITEM CARDS ── */
+.menu-items{ display:flex; flex-direction:column; gap:14px; margin-bottom:40px; }
+.menu-item-card{
+  background:white; border-radius:16px;
+  padding:18px 20px;
+  display:flex; align-items:center; gap:16px;
+  box-shadow:0 2px 12px rgba(0,0,0,0.06);
+  transition:.2s;
+}
+.menu-item-card:hover{ box-shadow:0 4px 20px rgba(0,0,0,0.1); }
+.menu-item-card.is-soldout{ opacity:.65; }
+.item-emoji{ font-size:32px; flex-shrink:0; }
+.item-info{ flex:1; }
+.item-info h3{ font-size:16px; font-weight:600; margin-bottom:3px; }
+.item-info .item-cat{
+  font-size:11px; color:#888; text-transform:uppercase;
+  letter-spacing:.5px; font-weight:500;
+}
+.item-price-wrap{ display:flex; align-items:center; gap:8px; }
+.price-input{
+  width:90px; padding:7px 10px;
+  border:1.5px solid #e8e8e8; border-radius:8px;
+  font-size:15px; font-weight:600; color:#E10600;
+  font-family:'Poppins'; outline:none; transition:.2s;
+  text-align:center;
+}
+.price-input:focus{ border-color:#E10600; }
+.save-price-btn{
+  background:#E10600; color:white; border:none;
+  padding:7px 14px; border-radius:8px;
+  font-size:12px; font-weight:600; cursor:pointer;
+  font-family:'Poppins'; transition:.2s; white-space:nowrap;
+}
+.save-price-btn:hover{ background:#c30000; }
+.save-price-btn.saved{ background:#16a34a; }
+
+/* Toggle switch */
+.toggle-wrap{ display:flex; flex-direction:column; align-items:center; gap:4px; flex-shrink:0; }
+.toggle-label{ font-size:10px; color:#aaa; font-weight:500; }
+.toggle{
+  position:relative; width:50px; height:26px;
+  cursor:pointer;
+}
+.toggle input{ opacity:0; width:0; height:0; }
+.slider-track{
+  position:absolute; inset:0;
+  background:#ddd; border-radius:26px;
+  transition:.3s;
+}
+.slider-track:before{
+  content:''; position:absolute;
+  width:20px; height:20px;
+  left:3px; bottom:3px;
+  background:white; border-radius:50%;
+  transition:.3s;
+  box-shadow:0 1px 4px rgba(0,0,0,0.2);
+}
+.toggle input:checked + .slider-track{ background:#E10600; }
+.toggle input:checked + .slider-track:before{ transform:translateX(24px); }
+
+/* Popular toggle */
+.popular-toggle-wrap{ display:flex; flex-direction:column; align-items:center; gap:4px; flex-shrink:0; }
+
+/* ── ADD ITEM FORM ── */
+.add-item-card{
+  background:white; border-radius:16px;
+  padding:24px; box-shadow:0 2px 12px rgba(0,0,0,0.06);
+  margin-bottom:32px;
+}
+.form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.form-group{ display:flex; flex-direction:column; gap:6px; }
+.form-group label{ font-size:12px; font-weight:600; color:#555; text-transform:uppercase; letter-spacing:.4px; }
+.form-group input, .form-group select{
+  padding:10px 14px; border:1.5px solid #e8e8e8;
+  border-radius:10px; font-size:14px;
+  font-family:'Poppins'; outline:none; transition:.2s;
+}
+.form-group input:focus, .form-group select:focus{ border-color:#E10600; }
+.form-group.full{ grid-column:1/-1; }
+.add-btn{
+  margin-top:16px; width:100%; padding:13px;
+  background:#E10600; color:white; border:none;
+  border-radius:10px; font-size:15px; font-weight:600;
+  cursor:pointer; font-family:'Poppins'; transition:.25s;
+}
+.add-btn:hover{ background:#c30000; transform:translateY(-1px); }
+
+/* ── TOAST ── */
+.admin-toast{
+  position:fixed; bottom:30px; left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:#222; color:white;
+  padding:11px 22px; border-radius:30px;
+  font-size:13px; font-weight:500;
+  opacity:0; pointer-events:none;
+  transition:all .3s; z-index:9999;
+}
+.admin-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .admin-stats{ grid-template-columns:1fr 1fr; }
+  .form-grid{ grid-template-columns:1fr; }
+  .menu-item-card{ flex-wrap:wrap; }
+  .admin-header{ padding:14px 18px; }
+  .admin-body{ padding:20px 14px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN SCREEN ══ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <h1>🍗 Shawok</h1>
+    <p>Admin Panel — Restaurant Owner Only</p>
+    <input type="password" id="passwordInput" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')login()">
+    <button class="login-btn" onclick="login()">Login →</button>
+    <p class="login-error" id="loginError">❌ Wrong password. Try again.</p>
+  </div>
+</div>
+
+<!-- ══ ADMIN SCREEN ══ -->
+<div id="adminScreen">
+  <div class="admin-header">
+    <div>
+      <h1>🍗 Shawok Admin</h1>
+      <span>Changes go live instantly for all customers</span>
+    </div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <div class="admin-body">
+
+    <!-- Stats -->
+    <div class="admin-stats">
+      <div class="stat-card">
+        <div class="num" id="statTotal">0</div>
+        <div class="lbl">Total Items</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" id="statAvailable">0</div>
+        <div class="lbl">Available</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" id="statSoldOut">0</div>
+        <div class="lbl">Sold Out</div>
+      </div>
+    </div>
+
+    <!-- Menu Items -->
+    <div class="section-title">
+      Menu Items
+      <span>Toggle sold out or update prices — saves instantly</span>
+    </div>
+    <div class="menu-items" id="menuItemsList"></div>
+
+    <!-- Add New Item -->
+    <div class="section-title">Add New Item</div>
+    <div class="add-item-card">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Item Name</label>
+          <input type="text" id="newTitle" placeholder="e.g. Spicy Wrap">
+        </div>
+        <div class="form-group">
+          <label>Price (₹)</label>
+          <input type="number" id="newPrice" placeholder="e.g. 150">
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select id="newCat">
+            <option value="shawaya">Shawaya</option>
+            <option value="wrap">Wrap</option>
+            <option value="fries">Fries</option>
+            <option value="tenders">Tenders</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Emoji</label>
+          <input type="text" id="newEmoji" placeholder="e.g. 🌯" maxlength="2">
+        </div>
+        <div class="form-group full">
+          <label>Image filename (in images/ folder)</label>
+          <input type="text" id="newImg" placeholder="e.g. images/newitem.png">
+        </div>
+      </div>
+      <button class="add-btn" onclick="addNewItem()">+ Add Item to Menu</button>
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid #eee">
+      <button onclick="fixMenuData()" style="width:100%;padding:11px;background:#555;color:white;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif">🔧 Fix Menu Data (run once if items show as undefined)</button>
+    </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="admin-toast" id="adminToast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"
+import { getDatabase, ref, onValue, set, update, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"
+
+const defaultItems = [
+  { id:"item1", title:"Classic Shawaya",  emoji:"🍛", cat:"shawaya" },
+  { id:"item2", title:"Masala Shawaya",   emoji:"🍛", cat:"shawaya" },
+  { id:"item3", title:"Zinger Wrap",      emoji:"🌯", cat:"wrap"    },
+  { id:"item4", title:"Wrap Combo",       emoji:"🌯", cat:"wrap"    },
+  { id:"item5", title:"Loaded Fries",     emoji:"🍟", cat:"fries"   },
+  { id:"item6", title:"Chicken Tenders",  emoji:"🍗", cat:"tenders" },
+  { id:"item7", title:"BBQ Tenders",      emoji:"🍗", cat:"tenders" }
+]
+
+// ── SAME CONFIG AS script.js ──────────────────────────────────────────────────
+const firebaseConfig = {
+  apiKey: "AIzaSyBbwkNbrwERMFrvznjbnVwKikC6N-b72Lg",
+  authDomain: "shawok.firebaseapp.com",
+  databaseURL: "https://shawok-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "shawok",
+  storageBucket: "shawok.firebasestorage.app",
+  messagingSenderId: "407264108895",
+  appId: "1:407264108895:web:f51e3dca6836917386d6ea"
+}
+
+// ── CHANGE THIS TO YOUR OWN PASSWORD ─────────────────────────────────────────
+const ADMIN_PASSWORD = "shawok2026"
+
+const app = initializeApp(firebaseConfig)
+const db  = getDatabase(app)
+
+let menuData = {}
+
+// ── LOGIN / LOGOUT ────────────────────────────────────────────────────────────
+window.login = function() {
+  const pw = document.getElementById('passwordInput').value
+  if (pw === ADMIN_PASSWORD) {
+    document.getElementById('loginScreen').style.display = 'none'
+    document.getElementById('adminScreen').style.display = 'block'
+    loadMenu()
+  } else {
+    document.getElementById('loginError').style.display = 'block'
+  }
+}
+
+window.logout = function() {
+  document.getElementById('loginScreen').style.display = 'flex'
+  document.getElementById('adminScreen').style.display = 'none'
+  document.getElementById('passwordInput').value = ''
+}
+
+// ── LOAD & RENDER MENU ────────────────────────────────────────────────────────
+function loadMenu() {
+  onValue(ref(db, 'menu'), snapshot => {
+    menuData = snapshot.val() || {}
+    renderAdminMenu()
+  })
+}
+
+function renderAdminMenu() {
+  const list = document.getElementById('menuItemsList')
+  list.innerHTML = ''
+
+  const ids = Object.keys(menuData)
+  const soldOutCount = ids.filter(id => menuData[id].soldOut).length
+
+  document.getElementById('statTotal').textContent     = ids.length
+  document.getElementById('statAvailable').textContent = ids.length - soldOutCount
+  document.getElementById('statSoldOut').textContent   = soldOutCount
+
+  ids.forEach(id => {
+    const item = menuData[id]
+    // Fallback to defaultItems for display fields that may be missing in old Firebase data
+    const defaults = defaultItems.find(d => d.id === id) || {}
+    const title = item.title || defaults.title || id
+    const emoji = item.emoji || defaults.emoji || '🍽️'
+    const cat   = item.cat   || defaults.cat   || ''
+    const card = document.createElement('div')
+    card.className = `menu-item-card${item.soldOut ? ' is-soldout' : ''}`
+    card.id = `card-${id}`
+    card.innerHTML = `
+      <div class="item-emoji">${emoji}</div>
+      <div class="item-info">
+        <h3>${title}</h3>
+        <div class="item-cat">${cat}</div>
+      </div>
+      <div class="item-price-wrap">
+        <span style="font-size:13px;color:#888;">₹</span>
+        <input class="price-input" type="number" value="${item.price}" id="price-${id}">
+        <button class="save-price-btn" id="savebtn-${id}" onclick="savePrice('${id}')">Save</button>
+      </div>
+      <div class="popular-toggle-wrap">
+        <div class="toggle-label">Popular</div>
+        <label class="toggle">
+          <input type="checkbox" ${item.popular ? 'checked' : ''} onchange="togglePopular('${id}', this.checked)">
+          <span class="slider-track"></span>
+        </label>
+      </div>
+      <div class="toggle-wrap">
+        <div class="toggle-label">${item.soldOut ? 'Sold Out' : 'Available'}</div>
+        <label class="toggle">
+          <input type="checkbox" ${item.soldOut ? 'checked' : ''} onchange="toggleSoldOut('${id}', this.checked)">
+          <span class="slider-track"></span>
+        </label>
+      </div>`
+    list.appendChild(card)
+  })
+}
+
+// ── ACTIONS ────────────────────────────────────────────────────────────────────
+window.toggleSoldOut = function(id, checked) {
+  update(ref(db, `menu/${id}`), { soldOut: checked })
+  showAdminToast(checked ? '🔴 Marked as Sold Out' : '🟢 Marked as Available')
+}
+
+window.togglePopular = function(id, checked) {
+  update(ref(db, `menu/${id}`), { popular: checked })
+  showAdminToast(checked ? '🔥 Marked as Popular' : '⭐ Removed Popular tag')
+}
+
+window.savePrice = function(id) {
+  const newPrice = parseInt(document.getElementById(`price-${id}`).value)
+  if (!newPrice || newPrice < 1) { showAdminToast('❌ Enter a valid price'); return }
+  update(ref(db, `menu/${id}`), { price: newPrice })
+  const btn = document.getElementById(`savebtn-${id}`)
+  btn.textContent = '✓ Saved'; btn.classList.add('saved')
+  setTimeout(() => { btn.textContent = 'Save'; btn.classList.remove('saved') }, 2000)
+  showAdminToast(`💰 Price updated to ₹${newPrice}`)
+}
+
+window.addNewItem = function() {
+  const title = document.getElementById('newTitle').value.trim()
+  const price = parseInt(document.getElementById('newPrice').value)
+  const cat   = document.getElementById('newCat').value
+  const emoji = document.getElementById('newEmoji').value.trim() || '🍽️'
+  const img   = document.getElementById('newImg').value.trim() || 'images/placeholder.png'
+
+  if (!title || !price) { showAdminToast('❌ Fill in name and price'); return }
+
+  const id = 'item' + Date.now()
+  set(ref(db, `menu/${id}`), {
+    title, price, cat, emoji, img,
+    rating: 4, popular: false, soldOut: false
+  })
+
+  document.getElementById('newTitle').value = ''
+  document.getElementById('newPrice').value = ''
+  document.getElementById('newEmoji').value = ''
+  document.getElementById('newImg').value   = ''
+  showAdminToast('✅ New item added to menu!')
+}
+
+window.fixMenuData = function() {
+  const fullItems = [
+    { id:"item1", img:"images/shawaya1.png",    title:"Classic Shawaya",  price:160, cat:"shawaya", emoji:"🍛", rating:5, popular:true,  soldOut:false },
+    { id:"item2", img:"images/shawaya2.png",    title:"Masala Shawaya",   price:170, cat:"shawaya", emoji:"🍛", rating:5, popular:false, soldOut:false },
+    { id:"item3", img:"images/wrap.png",        title:"Zinger Wrap",      price:110, cat:"wrap",    emoji:"🌯", rating:4, popular:true,  soldOut:false },
+    { id:"item4", img:"images/wrapcombo.png",   title:"Wrap Combo",       price:130, cat:"wrap",    emoji:"🌯", rating:4, popular:false, soldOut:false },
+    { id:"item5", img:"images/loadedfries.png", title:"Loaded Fries",     price:170, cat:"fries",   emoji:"🍟", rating:4, popular:false, soldOut:false },
+    { id:"item6", img:"images/tenders1.png",    title:"Chicken Tenders",  price:170, cat:"tenders", emoji:"🍗", rating:5, popular:true,  soldOut:false },
+    { id:"item7", img:"images/bbq_tenders.png", title:"BBQ Tenders",      price:200, cat:"tenders", emoji:"🍗", rating:5, popular:false, soldOut:false }
+  ]
+  const patch = {}
+  fullItems.forEach(i => {
+    const existing = menuData[i.id] || {}
+    patch[i.id] = { ...i, price: existing.price ?? i.price, soldOut: existing.soldOut ?? false, popular: existing.popular ?? i.popular }
+  })
+  set(ref(db, 'menu'), patch)
+  showAdminToast('✅ Menu data fixed! Items should now show names.')
+}
+
+// ── TOAST ──────────────────────────────────────────────────────────────────────
+let toastT = null
+function showAdminToast(msg) {
+  const t = document.getElementById('adminToast')
+  t.textContent = msg; t.classList.add('show')
+  if (toastT) clearTimeout(toastT)
+  toastT = setTimeout(() => t.classList.remove('show'), 2600)
+}
+</script>
+</body>
+</html>

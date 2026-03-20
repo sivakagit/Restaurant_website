@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shawok Restaurant</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- GLOBAL DOODLE BACKGROUND -->
+<!-- ═══════════════ SVG FOOD ILLUSTRATION BACKGROUND ═══════════════ -->
+<header>
+  <div class="logo"><img src="images/logo.png" alt="Shawok"></div>
+  <nav>
+    <a href="#" class="nav-active">Home</a>
+    <a href="#food">Food</a>
+    <a href="#why-us">Why Us</a>
+    <a href="#menu">Menu</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <div class="cart-icon" onclick="toggleCart()">
+    🛒 <span class="cart-label">Cart (<span id="cartCount">0</span>)</span>
+  </div>
+</header>
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+<!-- OVERLAY -->
+<div id="overlay" onclick="toggleCart()"></div>
+
+<!-- CART DRAWER -->
+<div id="cartDrawer" class="cart-drawer">
+  <div class="cart-header">
+    <h2>Your Cart</h2>
+    <button class="close-cart" onclick="toggleCart()">✖</button>
+  </div>
+  <div id="cartItems"></div>
+  <div class="cart-total">
+    <div id="cartSummary"></div>
+    <p class="total-line">Total: ₹<span id="cartTotal">0</span></p>
+    <button class="checkout-btn" onclick="openAddressModal()">Order on WhatsApp 💬</button>
+  </div>
+</div>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <div class="hero-bg-pattern"></div>
+  <div style="position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden;">
+    <span style="position:absolute;top:4%;left:1%;font-size:38px;opacity:0.32;animation:fdrift 9s ease-in-out infinite 0s;">🍗</span>
+    <span style="position:absolute;top:16%;left:3%;font-size:30px;opacity:0.28;animation:fdrift 7s ease-in-out infinite 1s;">🍟</span>
+    <span style="position:absolute;top:30%;left:1%;font-size:36px;opacity:0.30;animation:fdrift 10s ease-in-out infinite 2s;">🌯</span>
+    <span style="position:absolute;top:46%;left:3%;font-size:28px;opacity:0.26;animation:fdrift 8s ease-in-out infinite 0.5s;">🔥</span>
+    <span style="position:absolute;top:60%;left:1%;font-size:34px;opacity:0.28;animation:fdrift 11s ease-in-out infinite 3s;">⭐</span>
+    <span style="position:absolute;top:74%;left:3%;font-size:30px;opacity:0.26;animation:fdrift 9s ease-in-out infinite 4s;">🍖</span>
+    <span style="position:absolute;top:86%;left:1%;font-size:36px;opacity:0.28;animation:fdrift 8s ease-in-out infinite 1.5s;">🥙</span>
+    <span style="position:absolute;top:5%;right:1%;font-size:36px;opacity:0.32;animation:fdrift 9s ease-in-out infinite 1.5s;">🥤</span>
+    <span style="position:absolute;top:18%;right:3%;font-size:30px;opacity:0.28;animation:fdrift 7s ease-in-out infinite 3s;">🍔</span>
+    <span style="position:absolute;top:32%;right:1%;font-size:34px;opacity:0.30;animation:fdrift 12s ease-in-out infinite 0.8s;">🍛</span>
+    <span style="position:absolute;top:48%;right:3%;font-size:28px;opacity:0.26;animation:fdrift 8s ease-in-out infinite 2.5s;">🌮</span>
+    <span style="position:absolute;top:62%;right:1%;font-size:32px;opacity:0.28;animation:fdrift 10s ease-in-out infinite 5s;">🍩</span>
+    <span style="position:absolute;top:76%;right:3%;font-size:30px;opacity:0.26;animation:fdrift 9s ease-in-out infinite 1s;">🌶️</span>
+    <span style="position:absolute;top:88%;right:1%;font-size:34px;opacity:0.28;animation:fdrift 8s ease-in-out infinite 2s;">🍕</span>
+    <span style="position:absolute;top:2%;left:20%;font-size:28px;opacity:0.22;animation:fdrift 10s ease-in-out infinite 2s;">🥗</span>
+    <span style="position:absolute;top:2%;left:42%;font-size:26px;opacity:0.20;animation:fdrift 8s ease-in-out infinite 3s;">🍜</span>
+    <span style="position:absolute;top:2%;right:20%;font-size:28px;opacity:0.22;animation:fdrift 9s ease-in-out infinite 1s;">🧆</span>
+    <span style="position:absolute;top:2%;right:42%;font-size:26px;opacity:0.20;animation:fdrift 11s ease-in-out infinite 4s;">🫔</span>
+    <span style="position:absolute;top:94%;left:18%;font-size:28px;opacity:0.22;animation:fdrift 9s ease-in-out infinite 1.5s;">🍱</span>
+    <span style="position:absolute;top:94%;left:40%;font-size:26px;opacity:0.20;animation:fdrift 7s ease-in-out infinite 2.5s;">🥘</span>
+    <span style="position:absolute;top:94%;right:18%;font-size:28px;opacity:0.22;animation:fdrift 10s ease-in-out infinite 3.5s;">🍗</span>
+    <span style="position:absolute;top:94%;right:40%;font-size:26px;opacity:0.20;animation:fdrift 8s ease-in-out infinite 0.5s;">🍟</span>
+    <span style="position:absolute;top:46%;left:15%;font-size:26px;opacity:0.16;animation:fdrift 13s ease-in-out infinite 6s;">🌯</span>
+    <span style="position:absolute;top:46%;right:15%;font-size:26px;opacity:0.16;animation:fdrift 12s ease-in-out infinite 7s;">🔥</span>
+  </div>
+<div class="hero-text">
+    <div class="hero-tag">🔥 #1 Shawaya in Town</div>
+    <h1>Shawok</h1>
+    <p>Fresh Shawaya • Crispy Chicken • Loaded Fries</p>
+    <div class="hero-btns">
+      <button class="primary-btn" onclick="document.getElementById('food').scrollIntoView({behavior:'smooth'})">Order Now 🛒</button>
+      <a href="#menu" class="secondary-btn">View Menu</a>
+    </div>
+    <div class="hero-info">
+      <div class="info-pill">⭐ 4.7 Rating</div>
+      <div class="info-pill">🚚 30 min delivery</div>
+      <div class="info-pill">🔥 Est. 2020</div>
+    </div>
+  </div>
+
+  <div class="hero-slider">
+    <img id="sliderImage" alt="Featured item">
+    <div class="slider-info">
+      <h3 id="sliderTitle"></h3>
+      <p id="sliderPrice"></p>
+      <button class="cart-btn" onclick="addCurrentItem()">Add to Cart</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ STATS STRIP ═══════════════ -->
+<div class="stats-strip">
+  <div class="stat-item"><span class="stat-num">5000+</span><span class="stat-label">Happy Customers</span></div>
+  <div class="stat-divider"></div>
+  <div class="stat-item"><span class="stat-num">4.7★</span><span class="stat-label">Average Rating</span></div>
+  <div class="stat-divider"></div>
+  <div class="stat-item"><span class="stat-num">30 min</span><span class="stat-label">Avg. Delivery</span></div>
+  <div class="stat-divider"></div>
+  <div class="stat-item"><span class="stat-num">7</span><span class="stat-label">Menu Items</span></div>
+</div>
+
+<!-- ═══════════════ DELIVERY AREA BANNER ═══════════════ -->
+<div class="delivery-banner">
+  <div class="delivery-banner-inner">
+    <span class="delivery-banner-icon">🚚</span>
+    <div class="delivery-banner-text">
+      <strong>We deliver to:</strong>
+      <span>Phagwara City • Model Town • Urban Estate • Bus Stand Area • Civil Lines • Nehru Nagar • Guru Nanak Nagar</span>
+    </div>
+    <div class="delivery-banner-badge">FREE Delivery</div>
+  </div>
+</div>
+
+<!-- ═══════════════ FOOD SECTION ═══════════════ -->
+<section id="food" class="food-section">
+  <div style="position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden;">
+    <span style="position:absolute;top:5%;left:1%;font-size:36px;opacity:0.30;animation:fdrift 9s ease-in-out infinite 0s;">🍗</span>
+    <span style="position:absolute;top:18%;left:3%;font-size:28px;opacity:0.26;animation:fdrift 7s ease-in-out infinite 1s;">🍟</span>
+    <span style="position:absolute;top:32%;left:1%;font-size:34px;opacity:0.28;animation:fdrift 10s ease-in-out infinite 2s;">🌯</span>
+    <span style="position:absolute;top:48%;left:3%;font-size:28px;opacity:0.24;animation:fdrift 8s ease-in-out infinite 0.5s;">🔥</span>
+    <span style="position:absolute;top:62%;left:1%;font-size:32px;opacity:0.26;animation:fdrift 11s ease-in-out infinite 3s;">⭐</span>
+    <span style="position:absolute;top:76%;left:3%;font-size:28px;opacity:0.24;animation:fdrift 9s ease-in-out infinite 4s;">🍖</span>
+    <span style="position:absolute;top:88%;left:1%;font-size:34px;opacity:0.26;animation:fdrift 8s ease-in-out infinite 1.5s;">🥙</span>
+    <span style="position:absolute;top:5%;right:1%;font-size:36px;opacity:0.30;animation:fdrift 9s ease-in-out infinite 1.5s;">🥤</span>
+    <span style="position:absolute;top:19%;right:3%;font-size:28px;opacity:0.26;animation:fdrift 7s ease-in-out infinite 3s;">🍔</span>
+    <span style="position:absolute;top:33%;right:1%;font-size:32px;opacity:0.28;animation:fdrift 12s ease-in-out infinite 0.8s;">🍛</span>
+    <span style="position:absolute;top:49%;right:3%;font-size:28px;opacity:0.24;animation:fdrift 8s ease-in-out infinite 2.5s;">🌮</span>
+    <span style="position:absolute;top:63%;right:1%;font-size:30px;opacity:0.26;animation:fdrift 10s ease-in-out infinite 5s;">🍩</span>
+    <span style="position:absolute;top:77%;right:3%;font-size:28px;opacity:0.24;animation:fdrift 9s ease-in-out infinite 1s;">🌶️</span>
+    <span style="position:absolute;top:89%;right:1%;font-size:32px;opacity:0.26;animation:fdrift 8s ease-in-out infinite 2s;">🍕</span>
+    <span style="position:absolute;top:2%;left:22%;font-size:26px;opacity:0.20;animation:fdrift 10s ease-in-out infinite 2s;">🥗</span>
+    <span style="position:absolute;top:2%;left:44%;font-size:24px;opacity:0.18;animation:fdrift 8s ease-in-out infinite 3s;">🍜</span>
+    <span style="position:absolute;top:2%;right:22%;font-size:26px;opacity:0.20;animation:fdrift 9s ease-in-out infinite 1s;">🧆</span>
+    <span style="position:absolute;top:2%;right:44%;font-size:24px;opacity:0.18;animation:fdrift 11s ease-in-out infinite 4s;">🫔</span>
+    <span style="position:absolute;top:95%;left:20%;font-size:26px;opacity:0.20;animation:fdrift 9s ease-in-out infinite 1.5s;">🍱</span>
+    <span style="position:absolute;top:95%;left:42%;font-size:24px;opacity:0.18;animation:fdrift 7s ease-in-out infinite 2.5s;">🥘</span>
+    <span style="position:absolute;top:95%;right:20%;font-size:26px;opacity:0.20;animation:fdrift 10s ease-in-out infinite 3.5s;">🍗</span>
+    <span style="position:absolute;top:95%;right:42%;font-size:24px;opacity:0.18;animation:fdrift 8s ease-in-out infinite 0.5s;">🍟</span>
+  </div>
+  </div>
+
+  <div class="section-header">
+    <h2>Our Food</h2>
+    <p>Made fresh daily with premium ingredients</p>
+  </div>
+
+  <div class="category-bar">
+    <button onclick="filterItems('all')" class="active">All</button>
+    <button onclick="filterItems('shawaya')">Shawaya</button>
+    <button onclick="filterItems('wrap')">Wraps</button>
+    <button onclick="filterItems('fries')">Fries</button>
+    <button onclick="filterItems('tenders')">Tenders</button>
+  </div>
+
+  <div id="foodGrid" class="food-grid"></div>
+</section>
+
+<!-- ═══════════════ WHY US ═══════════════ -->
+<section id="why-us" class="why-us-section">
+  <div class="section-header light">
+    <h2>Why Choose Shawok?</h2>
+    <p>We're not just a restaurant — we're an experience</p>
+  </div>
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="why-icon">🌿</div>
+      <h3>Fresh Ingredients</h3>
+      <p>Every dish is made with hand-picked fresh ingredients sourced daily from local markets.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">⚡</div>
+      <h3>Fast Delivery</h3>
+      <p>Hot food at your doorstep in 30 minutes or less. We don't keep you waiting.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">👨‍🍳</div>
+      <h3>Expert Chefs</h3>
+      <p>Our team of experienced chefs brings authentic flavors to every single bite.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">💰</div>
+      <h3>Best Value</h3>
+      <p>Premium taste at prices that make sense. Great food shouldn't break the bank.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ MENU SECTION ═══════════════ -->
+<section id="menu" class="menu-section">
+  <div style="position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden;">
+    <span style="position:absolute;top:3%;left:1%;font-size:40px;opacity:0.32;animation:fdrift 11s ease-in-out infinite 0s;">🍗</span>
+    <span style="position:absolute;top:16%;left:2%;font-size:32px;opacity:0.28;animation:fdrift 9s ease-in-out infinite 2s;">🍟</span>
+    <span style="position:absolute;top:30%;left:1%;font-size:38px;opacity:0.30;animation:fdrift 13s ease-in-out infinite 4s;">🌯</span>
+    <span style="position:absolute;top:46%;left:2%;font-size:30px;opacity:0.26;animation:fdrift 8s ease-in-out infinite 1s;">🔥</span>
+    <span style="position:absolute;top:61%;left:1%;font-size:36px;opacity:0.28;animation:fdrift 10s ease-in-out infinite 3s;">⭐</span>
+    <span style="position:absolute;top:76%;left:2%;font-size:30px;opacity:0.26;animation:fdrift 9s ease-in-out infinite 5s;">🥙</span>
+    <span style="position:absolute;top:89%;left:1%;font-size:36px;opacity:0.28;animation:fdrift 11s ease-in-out infinite 2s;">🍖</span>
+    <span style="position:absolute;top:3%;right:1%;font-size:38px;opacity:0.32;animation:fdrift 10s ease-in-out infinite 1.5s;">🍛</span>
+    <span style="position:absolute;top:17%;right:2%;font-size:30px;opacity:0.28;animation:fdrift 8s ease-in-out infinite 5s;">🥤</span>
+    <span style="position:absolute;top:32%;right:1%;font-size:36px;opacity:0.30;animation:fdrift 12s ease-in-out infinite 0.5s;">🍔</span>
+    <span style="position:absolute;top:48%;right:2%;font-size:28px;opacity:0.26;animation:fdrift 9s ease-in-out infinite 3s;">🌮</span>
+    <span style="position:absolute;top:63%;right:1%;font-size:34px;opacity:0.28;animation:fdrift 11s ease-in-out infinite 2s;">🍩</span>
+    <span style="position:absolute;top:78%;right:2%;font-size:28px;opacity:0.26;animation:fdrift 8s ease-in-out infinite 4s;">🌶️</span>
+    <span style="position:absolute;top:90%;right:1%;font-size:34px;opacity:0.28;animation:fdrift 10s ease-in-out infinite 1s;">🍕</span>
+    <span style="position:absolute;top:1%;left:18%;font-size:28px;opacity:0.22;animation:fdrift 10s ease-in-out infinite 2s;">🥗</span>
+    <span style="position:absolute;top:1%;left:40%;font-size:26px;opacity:0.20;animation:fdrift 8s ease-in-out infinite 3s;">🍜</span>
+    <span style="position:absolute;top:1%;right:18%;font-size:28px;opacity:0.22;animation:fdrift 9s ease-in-out infinite 1s;">🧆</span>
+    <span style="position:absolute;top:1%;right:40%;font-size:26px;opacity:0.20;animation:fdrift 11s ease-in-out infinite 4s;">🫔</span>
+    <span style="position:absolute;top:96%;left:16%;font-size:28px;opacity:0.22;animation:fdrift 9s ease-in-out infinite 1.5s;">🍱</span>
+    <span style="position:absolute;top:96%;left:38%;font-size:26px;opacity:0.20;animation:fdrift 7s ease-in-out infinite 2.5s;">🥘</span>
+    <span style="position:absolute;top:96%;right:16%;font-size:28px;opacity:0.22;animation:fdrift 10s ease-in-out infinite 3.5s;">🍗</span>
+    <span style="position:absolute;top:96%;right:38%;font-size:26px;opacity:0.20;animation:fdrift 8s ease-in-out infinite 0.5s;">🍟</span>
+    <span style="position:absolute;top:48%;left:10%;font-size:26px;opacity:0.18;animation:fdrift 13s ease-in-out infinite 6s;">🌯</span>
+    <span style="position:absolute;top:48%;right:10%;font-size:26px;opacity:0.18;animation:fdrift 12s ease-in-out infinite 7s;">🔥</span>
+  </div>
+    <div class="section-header">
+    <h2>Full Menu</h2>
+    <p>Everything we serve, all in one place</p>
+  </div>
+  <div class="menu-wrapper" style="position:relative;z-index:1;">
+    <img src="images/menu.jpg" class="menu-image" alt="Shawok full menu">
+    <div class="menu-cta">
+      <p>See something you like?</p>
+      <button class="primary-btn" onclick="document.getElementById('food').scrollIntoView({behavior:'smooth'})">Order Online Now →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ TESTIMONIALS ═══════════════ -->
+<section class="testimonials-section">
+  <div class="section-header">
+    <h2>What Our Customers Say</h2>
+    <p>Real reviews from real food lovers</p>
+  </div>
+  <div class="testimonials-grid">
+    <div class="testimonial-card">
+      <div class="stars-row">★★★★★</div>
+      <p>"Best shawaya I've had outside of home. The masala shawaya is absolutely fire 🔥"</p>
+      <div class="reviewer"><div class="reviewer-avatar">AR</div><span>Arjun R.</span></div>
+    </div>
+    <div class="testimonial-card">
+      <div class="stars-row">★★★★★</div>
+      <p>"Loaded fries are to die for. Fast delivery, piping hot. Will order every week!"</p>
+      <div class="reviewer"><div class="reviewer-avatar">SP</div><span>Simran P.</span></div>
+    </div>
+    <div class="testimonial-card">
+      <div class="stars-row">★★★★☆</div>
+      <p>"The BBQ tenders are unreal. Crispy outside, juicy inside. Highly recommend."</p>
+      <div class="reviewer"><div class="reviewer-avatar">RK</div><span>Rahul K.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer id="contact">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <h3>🍗 Shawok</h3>
+      <p>Best Shawaya in town. Fresh, crispy & made with love since 2020.</p>
+      <div class="footer-socials">
+        <a href="#" class="social-btn">📘 Facebook</a>
+        <a href="#" class="social-btn">📸 Instagram</a>
+      </div>
+    </div>
+    <div class="footer-links">
+      <h4>Quick Links</h4>
+      <a href="#">Home</a>
+      <a href="#food">Our Food</a>
+      <a href="#menu">Full Menu</a>
+      <a href="#why-us">Why Us</a>
+    </div>
+    <div class="footer-contact">
+      <h4>Contact Us</h4>
+      <p>📍 Main Market, Phagwara, Punjab</p>
+      <p>📞 <a href="tel:+919876543210">+91 98765 43210</a></p>
+      <p>💬 <a href="https://wa.me/919876543210" target="_blank">WhatsApp Order</a></p>
+      <p>⏰ Open daily: 11am – 11pm</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Shawok Restaurant. All rights reserved. Made with ❤️ in Phagwara.</p>
+  </div>
+</footer>
+
+<!-- Mobile sticky CTA -->
+<div class="mobile-cta">
+  <button onclick="document.getElementById('food').scrollIntoView({behavior:'smooth'})">🛒 Order Now</button>
+</div>
+
+<!-- ═══════════════ ADDRESS MODAL ═══════════════ -->
+<div id="addressOverlay" class="address-overlay" onclick="closeAddressModal()"></div>
+<div id="addressModal" class="address-modal">
+  <div class="address-modal-header">
+    <h3>📦 Delivery Details</h3>
+    <button class="address-modal-close" onclick="closeAddressModal()">✖</button>
+  </div>
+  <p class="address-modal-sub">We need your details to deliver your order</p>
+
+  <div class="address-form">
+    <div class="address-field">
+      <label>Your Name *</label>
+      <input type="text" id="customerName" placeholder="e.g. Rahul Sharma" autocomplete="name">
+    </div>
+    <div class="address-field">
+      <label>Phone Number *</label>
+      <input type="tel" id="customerPhone" placeholder="e.g. 98765 43210" autocomplete="tel">
+    </div>
+    <div class="address-field">
+      <label>Delivery Area *</label>
+      <select id="customerArea">
+        <option value="">-- Select your area --</option>
+        <option>Phagwara City</option>
+        <option>Model Town</option>
+        <option>Urban Estate</option>
+        <option>Bus Stand Area</option>
+        <option>Civil Lines</option>
+        <option>Nehru Nagar</option>
+        <option>Guru Nanak Nagar</option>
+        <option>Other (mention in address)</option>
+      </select>
+    </div>
+    <div class="address-field">
+      <label>Full Address *</label>
+      <textarea id="customerAddress" placeholder="House no., street name, landmark..." rows="3"></textarea>
+    </div>
+    <div class="address-field">
+      <label>Order Notes <span style="color:#aaa;font-weight:400">(optional)</span></label>
+      <input type="text" id="customerNotes" placeholder="e.g. Extra spicy, no onions...">
+    </div>
+  </div>
+
+  <div class="address-modal-footer">
+    <div class="address-area-warning">
+      ⚠️ We only deliver within Phagwara. If your area is not listed, please call us first.
+    </div>
+    <button class="address-confirm-btn" onclick="confirmOrder()">
+      Confirm & Order on WhatsApp 💬
+    </button>
+  </div>
+</div>
+
+<script type="module" src="script.js"></script>
+</body>
+</html>
